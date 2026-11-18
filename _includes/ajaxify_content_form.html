@@ -7,23 +7,23 @@
     sendButton.addEventListener('click', function(event){
       event.preventDefault();
 
-      sendButton.innerHTML = '{{ site.text.contact.ajax.sending | default: "sending..." }}';
+      sendButton.textContent = {{ site.text.contact.ajax.sending | default: "sending..." | jsonify | replace: '<', '\u003c' | replace: '>', '\u003e' | replace: '&', '\u0026' }};
 
       var xhr = new XMLHttpRequest();
-      xhr.open('POST', '//formspree.io/{{ site.email }}', true);
+      xhr.open('POST', {{ site.email | prepend: 'https://formspree.io/' | jsonify | replace: '<', '\u003c' | replace: '>', '\u003e' | replace: '&', '\u0026' }}, true);
       xhr.setRequestHeader("Accept", "application/json")
       xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded")
 
       xhr.send(
-        "email=" + inputEmail.value +
-        "&message=" + textAreaMessage.value);
+        "email=" + encodeURIComponent(inputEmail.value) +
+        "&message=" + encodeURIComponent(textAreaMessage.value));
 
       xhr.onloadend = function (res) {
         if (res.target.status === 200){
-          sendButton.innerHTML = '{{ site.text.contact.ajax.sent | default: "Message sent!" }}';
+          sendButton.textContent = {{ site.text.contact.ajax.sent | default: "Message sent!" | jsonify | replace: '<', '\u003c' | replace: '>', '\u003e' | replace: '&', '\u0026' }};
         }
         else {
-          sendButton.innerHTML = '{{ site.text.contact.ajax.error | default: "Error!" }}';
+          sendButton.textContent = {{ site.text.contact.ajax.error | default: "Error!" | jsonify | replace: '<', '\u003c' | replace: '>', '\u003e' | replace: '&', '\u0026' }};
         }
       }
     });
